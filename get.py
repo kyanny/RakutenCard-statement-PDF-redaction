@@ -1,3 +1,6 @@
+# PythonでPDFのテキスト毎の座標を取得する #Python - Qiita
+# https://qiita.com/76r6qo698/items/8d7f7a644385a18e21db
+
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
 from pdfminer.layout import LAParams, LTTextContainer

@@ -1,4 +1,5 @@
-
+# 【メモ書き】無数のPDFをPythonで黒塗りする #Python - Qiita
+# https://qiita.com/Hiromasa_H/items/e178ce3b16c76778de80
 
 import fitz
  

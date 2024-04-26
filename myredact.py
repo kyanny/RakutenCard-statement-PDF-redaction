@@ -105,6 +105,8 @@ with open(path, 'rb') as input:
                     y0 = layout.y0
                     y1 = layout.y1
 
+                    # https://pymupdf.readthedocs.io/ja/latest/app3.html#coordinates
+                    # https://pymupdf.readthedocs.io/ja/latest/app3.html#origin-point-point-size-and-y-axis
                     mupdf_y0 = 842 - y1
                     mupdf_y1 = 842 - y0
 
@@ -166,6 +168,8 @@ with open(path, 'rb') as input:
                     y0 = layout.y0
                     y1 = layout.y1
 
+                    # https://pymupdf.readthedocs.io/ja/latest/app3.html#coordinates
+                    # https://pymupdf.readthedocs.io/ja/latest/app3.html#origin-point-point-size-and-y-axis
                     mupdf_y0 = 842 - y1
                     mupdf_y1 = 842 - y0
 
@@ -254,6 +258,8 @@ with open(path, 'rb') as input:
                     #
                     # したがって、あなたのコードのコンテキストによりますが、もし72DPIを使用している場合は、792 - y1が正しいかもしれません。
 
+                    # https://pymupdf.readthedocs.io/ja/latest/app3.html#coordinates
+                    # https://pymupdf.readthedocs.io/ja/latest/app3.html#origin-point-point-size-and-y-axis
                     mupdf_y0 = 842 - y1
                     mupdf_y1 = 842 - y0
 
