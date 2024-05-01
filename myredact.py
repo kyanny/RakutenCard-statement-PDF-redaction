@@ -78,6 +78,11 @@ page_1_not_redact_layout_number = [
 
 manager = PDFResourceManager()
 
+# key = ページ番号, value = ページ内の黒塗りしないアイテムのY座標のリスト
+notredactdict = {}
+# key = ページ番号, value = ページ内の黒塗りするアイテムのタプル(x0, y0, x1, y1)のリスト
+redactdict = {}
+
 with open(path, 'rb') as input:
     with PDFPageAggregator(manager, laparams=LAParams()) as device:
         # PDFPageInterpreterオブジェクトの取得
@@ -93,8 +98,8 @@ with open(path, 'rb') as input:
         pages = list(PDFPage.get_pages(input))
         not_redact_coords_pages = []
         for page_number, page in enumerate(pages):
-            not_redact_coords_page = []
-            not_redact_coords = []
+            notredactdict[page_number] = []
+
             iprtr.process_page(page)
             layouts = device.get_result()
             for layout_number, layout in enumerate(layouts):
@@ -110,34 +115,32 @@ with open(path, 'rb') as input:
                     mupdf_y0 = 842 - y1
                     mupdf_y1 = 842 - y0
 
+                    _y0 = int(mupdf_y0)
+
+                    # debug
+                    if _y0 == 558:
+                        print(f'@@@ softbank {text} {int(_y0)}')
+
                     go_to_next_layout = False
                     for item_name in not_redact_item_name:
                         if re.search(item_name, text):
-                            print(f'xyz {item_name} {text} {mupdf_y0} {mupdf_y1}')
-                            not_redact_coords.append((int(mupdf_y0), int(mupdf_y1)))
+                            print(f'xyz {item_name} {text} {_y0}')
+                            notredactdict[page_number].append(_y0)
                             go_to_next_layout = True
                             break
 
                     if go_to_next_layout:
-                        print('-------------')
-                        not_redact_coords_page.append(not_redact_coords)
-                        print(not_redact_coords_page)
                         continue
 
-            print(not_redact_coords_page)
-            not_redact_coords_pages.append(not_redact_coords_page)
-
-
-        print(len(not_redact_coords_pages))
-        print(not_redact_coords_pages)
+        print('== dump notredactdict ==')
+        print(notredactdict)
 
         # 二回目の全ページ走査
         # 黒塗りする箇所の座標を取得する
-#        pages = list(PDFPage.get_pages(input))
         for page_number, page in enumerate(pages):
+            print(f'+++ PAGE {page_number}')
             # 一回目の走査で見つけた、このページ内の黒塗りしないアイテムのY座標を復元する
-            not_redact_coords = not_redact_coords_pages[page_number]
-            print(not_redact_coords)
+            coords = notredactdict[page_number]
 
             redact_coords = []
             iprtr.process_page(page)
@@ -173,18 +176,43 @@ with open(path, 'rb') as input:
                     mupdf_y0 = 842 - y1
                     mupdf_y1 = 842 - y0
 
+                    _y0 = int(mupdf_y0)
+
                     # 黒塗りしないアイテムのY座標と同じ高さのアイテムは黒塗りしない
+
+                    print("==========")
+                    print(_y0)
+                    print(coords)
+                    print("==========")
+                    okng = any(y0 == _y0 for y0 in coords)
+                    print(f'KKK {_y0} {okng}')
+
+
                     go_to_next_layout = False
-                    for not_redact_coord in not_redact_coords:
-
-#                        print([page_number, not_redact_coord[0], int(mupdf_y0), not_redact_coord[1], int(mupdf_y1), text])
-                        if int(mupdf_y0) == not_redact_coord[0] and int(mupdf_y1) == not_redact_coord[1]:
-#                            print(text)
-                            go_to_next_layout = True
-                            break
-                    if go_to_next_layout:
+                    found = any(y0 == _y0 for y0 in notredactdict[page_number])
+                    if found:
+                        print(f'found={found} skip {coords[0]} {_y0} {text}')
                         continue
+                        #go_to_next_layout = True
 
+  
+#                     for not_redact_coord in coords:
+
+#                         #print(f'{not_redact_coord[0]} == {int(mupdf_y0)} => {not_redact_coord[0] == int(mupdf_y0)} | {not_redact_coord[1]} == {int(mupdf_y1)} => {not_redact_coord[1] == int(mupdf_y1)}')
+# #                        print(f'{not_redact_coord[0]} == {int(mupdf_y0)} ?=> {not_redact_coord[0] == int(mupdf_y0)}')
+
+# #                        print([page_number, not_redact_coord[0], int(mupdf_y0), not_redact_coord[1], int(mupdf_y1), text])
+# #                        if int(mupdf_y0) == not_redact_coord[0] and int(mupdf_y1) == not_redact_coord[1]:
+#                         if _y0 == coords[0]: # ここがおかしいね。。
+#                             print(f'skip {coords[0]} {_y0} {text}')
+#                             go_to_next_layout = True
+#                             break
+                    # if go_to_next_layout:
+                    #     continue
+
+                    # this should never reach here because y0 558..
+                    if _y0 == 558:
+                        print(f'$$$ NEVER COME HERE softbank {text} {_y0}')
                     redact_coords.append((x0, mupdf_y0, x1, mupdf_y1))
             
             redact_coords_pages.append(redact_coords)
