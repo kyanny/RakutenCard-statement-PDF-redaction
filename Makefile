@@ -3,3 +3,6 @@ all:
 
 clean:
 	@rm -fv *_redacted.pdf
+
+clobber:
+	@rm -fv *.pdf
