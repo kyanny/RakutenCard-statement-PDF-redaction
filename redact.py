@@ -9,10 +9,14 @@ parser.add_argument("pdf_path", help="Path to the PDF file")
 parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 args = parser.parse_args()
 
+# 黒塗りしない「利用店名」
+# 明細に半角カタカナで書いてあっても全角カタカナで指定してください
 keep_items = [
     "ソフトバンクエム",
     "ドコモご利用料金",
 ]
+# 黒塗りしないテキストのブロック番号
+# ブロック番号は --debug オプション付きで実行するとわかります
 keep_block_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 16, 17, 18]
 
 doc = fitz.open(args.pdf_path)
