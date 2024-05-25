@@ -1,0 +1,3 @@
+mojimoji==0.0.13
+PyMuPDF==1.24.4
+PyMuPDFb==1.24.3
