@@ -1,7 +1,7 @@
 import argparse
 import re
 
-import fitz
+import pymupdf
 import mojimoji
 
 parser = argparse.ArgumentParser()
@@ -19,7 +19,7 @@ keep_items = [
 # ブロック番号は --debug オプション付きで実行するとわかります
 keep_block_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 16, 17, 18]
 
-doc = fitz.open(args.pdf_path)
+doc = pymupdf.open(args.pdf_path)
 for page in doc:
     blocks = page.get_text("blocks")
     for block in blocks:
