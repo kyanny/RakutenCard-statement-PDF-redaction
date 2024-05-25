@@ -11,8 +11,8 @@
 ## Installation
 
 ```
-git clone ...
-cd ...
+git clone https://github.com/kyanny/RakutenCard-statement-PDF-redaction
+cd RakutenCard-statement-PDF-redaction
 python3 -m venv venv
 . ./venv/bin/activate
 pip3 install -r requirements.txt
