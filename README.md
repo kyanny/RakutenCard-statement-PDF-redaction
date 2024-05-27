@@ -29,3 +29,15 @@ pip3 install -r requirements.txt
     ```
 
 4. 黒塗り済みの `statement_YYYYMM_redacted.pdf` が作られる
+5. `highlight.py` を実行する
+
+    ```
+    python3 highlight.py statement_YYYYMM_redacted.pdf --debug
+    ```
+6. 黄色でハイライトしたい page number と block number を指定して再実行する
+
+    ```
+    python3 highlight.py statement_YYYYMM_redacted.pdf --page X --block Y
+    ```
+
+7. 黒塗り + 黄色でハイライト済みの `statement_YYYYMM_redacted_highlighted.pdf` が作られる
