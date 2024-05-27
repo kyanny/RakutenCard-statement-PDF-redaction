@@ -11,6 +11,7 @@ parser.add_argument("--block", type=int, help="Block number to highlight")
 parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 args = parser.parse_args()
 
+done = False
 doc = pymupdf.open(args.pdf_path)
 for page in doc:
     blocks = page.get_text("blocks")
@@ -28,8 +29,10 @@ for page in doc:
         if args.page is not None and page.number == args.page:
             if args.block is not None and block_no == args.block:
                 page.add_highlight_annot((x0, y0, x1, y1))
+                done = True
 
-out_path = args.pdf_path.replace(".pdf", "_highlighted.pdf")
-doc.save(out_path)
-print(out_path)
+if done:
+    out_path = args.pdf_path.replace(".pdf", "_highlighted.pdf")
+    doc.save(out_path)
+    print(out_path)
 doc.close()
