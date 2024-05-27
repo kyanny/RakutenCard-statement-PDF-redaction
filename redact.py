@@ -6,8 +6,6 @@ import mojimoji
 
 parser = argparse.ArgumentParser()
 parser.add_argument("pdf_path", help="Path to the PDF file")
-parser.add_argument("--page", type=int, help="Page number to highlight")
-parser.add_argument("--block", type=int, help="Block number to highlight")
 parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 args = parser.parse_args()
 
@@ -36,23 +34,14 @@ for page in doc:
             print(f"Text: {zenkaku_text}")
             print()
 
-        # snipe mode (redact only the specified block)
-        if args.page is not None and page.number == args.page:
-            if args.block is not None and block_no == args.block:
-                page.add_redact_annot((x0, y0, x1, y1), fill=(0, 0, 0))
-                page.apply_redactions()
-                done = True
-
-        # bombing mode (redact all blocks except the reserved ones)
+        if page.number == 0 and block_no in keep_block_numbers:
+            pass
+        elif re.search("|".join(keep_items), zenkaku_text):
+            pass
         else:
-            if page.number == 0 and block_no in keep_block_numbers:
-                pass
-            elif re.search("|".join(keep_items), zenkaku_text):
-                pass
-            else:
-                page.add_redact_annot((x0, y0, x1, y1), fill=(0, 0, 0))
-                page.apply_redactions()
-                done = True
+            page.add_redact_annot((x0, y0, x1, y1), fill=(0, 0, 0))
+            page.apply_redactions()
+            done = True
 
 if done:
     out_path = args.pdf_path.replace(".pdf", "_redacted.pdf")
