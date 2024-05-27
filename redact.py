@@ -21,6 +21,7 @@ keep_items = [
 # ブロック番号は --debug オプション付きで実行するとわかります
 keep_block_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 16, 17, 18]
 
+done = False
 doc = pymupdf.open(args.pdf_path)
 for page in doc:
     blocks = page.get_text("blocks")
@@ -40,6 +41,7 @@ for page in doc:
             if args.block is not None and block_no == args.block:
                 page.add_redact_annot((x0, y0, x1, y1), fill=(0, 0, 0))
                 page.apply_redactions()
+                done = True
 
         # bombing mode (redact all blocks except the reserved ones)
         else:
@@ -50,8 +52,10 @@ for page in doc:
             else:
                 page.add_redact_annot((x0, y0, x1, y1), fill=(0, 0, 0))
                 page.apply_redactions()
+                done = True
 
-out_path = args.pdf_path.replace(".pdf", "_redacted.pdf")
-doc.save(out_path)
-print(out_path)
+if done:
+    out_path = args.pdf_path.replace(".pdf", "_redacted.pdf")
+    doc.save(out_path)
+    print(out_path)
 doc.close()
